@@ -24,8 +24,8 @@ ViroMaterials.createMaterials({
      position={[0,0,-1]}
      materials={['wood']}
    ></ViroBox>    
-
-   
+ 
+       
   </ViroARScene>)
 }
  
