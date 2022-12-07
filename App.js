@@ -1,29 +1,54 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet,View,TouchableOpacity,Text} from 'react-native';
 import {
   ViroARScene,
   ViroText,
   ViroConstants,
   ViroARSceneNavigator,
   ViroBox,
-  ViroMaterials
+  ViroMaterials,
+  Viro3DObject,
+  ViroAmbientLight
 } from '@viro-community/react-viro';
 
 
-const InitialScene=()=>{
-ViroMaterials.createMaterials({
+const InitialScene=(props)=>{
+  let data=props.sceneNavigator.viroAppProps;
+
+  ViroMaterials.createMaterials({
   wood:{
-    diffuseTexture:require('/Users/dhruvpatel/Documents/code/ReactNative/demo/assets/wood.jpeg')
-  }
+    diffuseTexture:require('./assets/wood.jpeg')
+  },
+  black:{
+    diffuseTexture:require('./assets/tv.png')
+  },
+  skull:{
+    diffuseTexture:require('./assets/skullcolor.png')
+  },
 })
   return (<ViroARScene>
-   <ViroBox
-     height={0.5}
-     width={0.5}
-     length={0.5}
-     position={[0,0,-1]}
-     materials={['wood']}
-   ></ViroBox>    
+    <ViroAmbientLight color="#ffffff"/>
+    {
+      data.object==='TV'?
+        <Viro3DObject
+        source={require('/Users/dhruvpatel/Documents/code/ReactNative/demo/assets/tv.obj')}
+        position={[0,-1,-3]}
+        scale={[0.5,0.5,0.5]}
+        type="OBJ"
+        materials={['black']}
+      />
+      :
+      <Viro3DObject
+      source={require('/Users/dhruvpatel/Documents/code/ReactNative/demo/assets/skull.obj')}
+      position={[0,0,-100]}
+      rotation={[-45,50,45]}
+      scale={[0.5,0.5,0.5]}
+      materials={['skull']}
+
+      type="OBJ"
+    />
+    }
+    
  
        
   </ViroARScene>)
@@ -32,24 +57,56 @@ ViroMaterials.createMaterials({
 
 
 export default () => {
+  const [object,setObject]=useState('skull');
   return (
-    <ViroARSceneNavigator
-      initialScene={{
-        scene:InitialScene
-      }
-      }
-      style={{flex:1}}
+      <View style={{flex:1}}>
+      <View style={styles.mainView}>
+        <ViroARSceneNavigator
+         initialScene={{
+          scene:InitialScene
+         }}
+         viroAppProps={{object:object}}
+      
     />
+      </View>
+      <View style={styles.controlView}>
+          <TouchableOpacity 
+            onPress={()=>{setObject('skull')}}
+          >
+            <Text style={styles.text}>View Skull</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={()=>{setObject('TV')}}
+          >
+            <Text style={styles.text} >View TV</Text>
+          </TouchableOpacity>
+
+        </View> 
+    
+
+      </View>
+   
   );
 };
 
 var styles = StyleSheet.create({
-  f1: {flex: 1},
-  helloWorldTextStyle: {
-    fontFamily: 'Arial',
-    fontSize: 30,
-    color: '#ffffff',
-    textAlignVertical: 'center',
-    textAlign: 'center',
+  mainView: {
+    flex: 1
   },
+  controlView: {
+    width:'100%',
+    height:100,
+    display:'flex',
+    flexDirection:'row',
+    justifyContent:'space-between',
+    backgroundColor:'white',
+    padding:20
+  },
+  text:{
+    backgroundColor:'grey',
+    padding:10
+  }
 });
+
+ 
